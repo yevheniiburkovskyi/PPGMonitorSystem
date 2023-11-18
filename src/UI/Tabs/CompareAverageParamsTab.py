@@ -14,7 +14,7 @@ class CompareAverageParamsTab(QWidget):
         
         self.setLayout(self.layout)
         
-        self.file_browse_layout = QHBoxLayout()
+
 
         self.file_path_edit = QTextEdit(self)
         font = QFont()
@@ -25,17 +25,16 @@ class CompareAverageParamsTab(QWidget):
         self.file_path_edit.setFocusPolicy(Qt.NoFocus)
         self.file_path_edit.setPlaceholderText("Place file path here")
 
-        self.browse_button = QPushButton("Browse", self)
+        self.browse_button = QPushButton("Browse File", self)
         self.browse_button.clicked.connect(self.browse_file)
-        self.browse_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.browse_button.setFont(font)
         
-        self.file_browse_layout.addWidget(self.file_path_edit)
-        self.file_browse_layout.addWidget(self.browse_button)
-        
-        self.layout.addLayout(self.file_browse_layout)
+        self.layout.addWidget(self.file_path_edit)
+        self.layout.addWidget(self.browse_button)
 
         self.parse_button = QPushButton("Compare average params", self)
         self.parse_button.clicked.connect(self.parse_excel)
+        self.parse_button.setFont(font)
         self.layout.addWidget(self.parse_button)
         
         self.tables_layout = QHBoxLayout()
