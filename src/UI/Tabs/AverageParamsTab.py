@@ -4,9 +4,6 @@ from PyQt5.QtWidgets import  QPushButton, QVBoxLayout, QFileDialog, QSizePolicy,
 
 import pandas as pd
 
-
-from matplotlib.figure import Figure
-
 from helpers.file_helpers import getParsedSignal
 from helpers.signal_helpers import getAverageParams, getMesures
 
@@ -48,9 +45,6 @@ class AverageParamsTab(QWidget):
         self.signal_params_table = QTableWidget(self)
         self.signal_params_table.setMinimumHeight(200)
         self.layout.addWidget(self.signal_params_table)
-        
-        # self.canvas = FigureCanvas(Figure())
-        # self.main_layout.addWidget(self.canvas)
 
     def browse_file(self):
         options = QFileDialog.Options()
@@ -93,13 +87,3 @@ class AverageParamsTab(QWidget):
 
             table.setItem(row, 0, item_key)
             table.setItem(row, 1, item_value)
-    
-    def plot_graph(self, data: pd.DataFrame):
-        figure = self.canvas.figure
-        axes = figure.add_subplot(111)
-        axes.plot(data.iloc[:, 0], data.iloc[:, 1])
-        axes.set_title("Raw PPG signal")
-        axes.set_xlabel("Time")
-        axes.set_ylabel("Signal")
-        
-        self.canvas.draw()
