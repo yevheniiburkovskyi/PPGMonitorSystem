@@ -29,7 +29,7 @@ class AverageParamsTab(QWidget):
         self.file_path_edit.setFocusPolicy(Qt.NoFocus)
         self.file_path_edit.setPlaceholderText("Place file path here")
 
-        self.browse_button = QPushButton("Browse", self)
+        self.browse_button = QPushButton("Browse File", self)
         self.browse_button.clicked.connect(self.browse_file)
         self.browse_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         
@@ -38,7 +38,7 @@ class AverageParamsTab(QWidget):
         
         self.layout.addLayout(self.file_browse_layout)
 
-        self.parse_button = QPushButton("Parse", self)
+        self.parse_button = QPushButton("Calculate average params", self)
         self.parse_button.clicked.connect(self.parse_excel)
         self.layout.addWidget(self.parse_button)
         
@@ -69,7 +69,7 @@ class AverageParamsTab(QWidget):
             params_df = pd.DataFrame(self.avarage_params.items(), columns = ['Parameter', 'Value'])
             
             file_name = generateUniqueFileName(getFileNames('results'))
-            params_df.to_excel(f"results/{file_name}.xlsx", index=False)
+            params_df.to_excel(f"results/single_average_params/{file_name}.xlsx", index=False)
         else:
             self.file_path_edit.setText('Place path here')
     

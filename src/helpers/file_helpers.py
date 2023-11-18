@@ -28,3 +28,13 @@ def generateUniqueFileName(file_names: list[str]) -> str:
         
         if unique_name not in file_names:
             return unique_name
+          
+def getParsedAverageParamsDict(path: str) -> dict:
+
+  data = pd.read_excel(path, header=None, index_col=0)
+
+  data_dict = data.squeeze().to_dict()
+  
+  del(data_dict['Parameter'])
+
+  return data_dict
