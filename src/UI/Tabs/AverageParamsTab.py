@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import  QPushButton, QVBoxLayout, QFileDialog, QSizePolicy,
 
 import pandas as pd
 
-from helpers.file_helpers import getParsedSignal
+from helpers.file_helpers import generateUniqueFileName, getFileNames, getParsedSignal
 from helpers.signal_helpers import getAverageParams, getMesures
 
 class AverageParamsTab(QWidget):
@@ -66,8 +66,10 @@ class AverageParamsTab(QWidget):
             self.avarage_params = getAverageParams(params_data)
             self.init_table(self.signal_params_table,self.avarage_params,headers = ['Parameter', 'Value'])
             
-            df = pd.DataFrame(self.avarage_params.items(), columns = ['Parameter', 'Value'])
-            df.to_excel("results/table_data.xlsx", index=False)
+            params_df = pd.DataFrame(self.avarage_params.items(), columns = ['Parameter', 'Value'])
+            
+            file_name = generateUniqueFileName(getFileNames('results'))
+            params_df.to_excel(f"results/{file_name}.xlsx", index=False)
         else:
             self.file_path_edit.setText('Place path here')
     
