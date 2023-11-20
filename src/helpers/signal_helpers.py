@@ -17,3 +17,7 @@ def getAverageParams(data):
       average_values[key] = np.mean(values)
 
   return average_values
+
+def getValuesByKey(array, key: str):
+    values = [element[key] for element in array if key in element]
+    return values

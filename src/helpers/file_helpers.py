@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import random
 import string
+import time
 
 def getParsedSignal(file_path: str) -> pd.DataFrame:
   parsed_df = pd.read_excel(file_path)
@@ -38,3 +39,13 @@ def getParsedAverageParamsDict(path: str) -> dict:
   del(data_dict['Parameter'])
 
   return data_dict
+
+def getCreationFilesTime(paths: str) -> list[str]:
+  data_list: list[str] = []
+  
+  for path in paths:
+    creation_time = os.path.getctime(path)
+    creation_datetime = time.ctime(creation_time)
+    data_list.append(creation_datetime)
+  
+  return data_list

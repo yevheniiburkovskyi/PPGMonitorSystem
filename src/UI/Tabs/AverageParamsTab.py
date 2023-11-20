@@ -4,8 +4,9 @@ from PyQt5.QtWidgets import  QPushButton, QVBoxLayout, QFileDialog, QSizePolicy,
 
 import pandas as pd
 
-from helpers.file_helpers import generateUniqueFileName, getFileNames, getParsedSignal
-from helpers.signal_helpers import getAverageParams, getMesures
+from helpers.file_helpers import generateUniqueFileName, getCreationFilesTime, getFileNames, getParsedSignal
+from helpers.plot_helpers import buildParamPlot
+from helpers.signal_helpers import getAverageParams, getMesures, getValuesByKey
 
 class AverageParamsTab(QWidget):
     def __init__(self):
@@ -13,6 +14,7 @@ class AverageParamsTab(QWidget):
 
         self.paths: list[str] = []
         self.avarage_params: dict
+        self.avarage_params_list: list[dict] = []
 
         self.layout = QVBoxLayout()
         
@@ -54,13 +56,13 @@ class AverageParamsTab(QWidget):
 
     def parse_excel(self):
         if self.paths:
-            params_data = []
+            self.avarage_params_list = []
             for path in self.paths:
                 raw_signal = getParsedSignal(path)
                 _,signal_params = getMesures(raw_signal)
-                params_data.append(signal_params)
-                
-            self.avarage_params = getAverageParams(params_data)
+                self.avarage_params_list.append(signal_params)
+            self.build_param_plot()
+            self.avarage_params = getAverageParams(self.avarage_params_list)
             self.init_table(self.signal_params_table,self.avarage_params,headers = ['Parameter', 'Value'])
             
             params_df = pd.DataFrame(self.avarage_params.items(), columns = ['Parameter', 'Value'])
@@ -86,3 +88,8 @@ class AverageParamsTab(QWidget):
 
             table.setItem(row, 0, item_key)
             table.setItem(row, 1, item_value)
+    
+    def build_param_plot(self):
+        # params = getValuesByKey(self.avarage_params_list, 'bpm')
+        # dates = getCreationFilesTime(self.paths)
+        buildParamPlot()
