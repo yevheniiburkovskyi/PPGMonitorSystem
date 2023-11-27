@@ -20,8 +20,6 @@ class ExcelParserApp(QMainWindow):
         
         self.tab1 = AverageParamsTab()
         self.tab2 = CompareAverageParamsTab()
-        self.tab3 = QTableWidget()
 
         self.central_widget.addTab(self.tab1, "Calculate average params")
         self.central_widget.addTab(self.tab2, "Compare average params")
-        self.central_widget.addTab(self.tab3, "Tab 3")
