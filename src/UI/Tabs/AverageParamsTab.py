@@ -7,6 +7,7 @@ import pandas as pd
 
 from helpers.file_helpers import getFileNames, getParsedSignal
 from helpers.signal_helpers import getAverageParams, getMesures
+from constants.constants import headers, params_keys
 
 class AverageParamsTab(QWidget):
     def __init__(self):
@@ -30,6 +31,8 @@ class AverageParamsTab(QWidget):
         self.file_path_edit.setFocusPolicy(Qt.NoFocus)
         self.file_path_edit.setMaximumHeight(50)
         self.file_path_edit.setPlaceholderText("Here you will see your file paths")
+        
+        self.buttons_layout = QHBoxLayout()
 
         self.browse_button = QPushButton("Browse File", self)
         self.browse_button.clicked.connect(self.browse_file)
@@ -41,10 +44,30 @@ class AverageParamsTab(QWidget):
         self.parse_button = QPushButton("Calculate average params", self)
         self.parse_button.clicked.connect(self.parse_excel)
         self.parse_button.setFont(font)
-        self.layout.addWidget(self.parse_button)
+        
+        self.buttons_layout.addWidget(self.browse_button)
+        self.buttons_layout.addWidget(self.parse_button)
+        self.layout.addLayout(self.buttons_layout)
+        
+        self.table_label = QLabel("Calculated average params", self)
+        self.table_label.setFont(font)
+        self.layout.addWidget(self.table_label)
         
         self.signal_params_table = QTableWidget(self)
-        self.signal_params_table.setMinimumHeight(200)
+        self.signal_params_table.horizontalHeader().setStyleSheet("QHeaderView::section { border: 1px solid black; }")
+        self.signal_params_table.setMinimumHeight(300)
+        self.signal_params_table.setRowCount(len(params_keys))
+        self.signal_params_table.setColumnCount(2)
+        self.signal_params_table.setHorizontalHeaderLabels(headers)
+        self.signal_params_table.verticalHeader().setVisible(False)
+        self.signal_params_table.setColumnWidth(0,400)
+        self.signal_params_table.setColumnWidth(1,100)
+        
+        for row, key in enumerate(params_keys):
+            item_key = QTableWidgetItem(key)
+            self.signal_params_table.setItem(row, 0, item_key)
+            item_key.setFlags(item_key.flags() & ~Qt.ItemIsEditable)
+            
         self.layout.addWidget(self.signal_params_table)
         
         self.save_file_layout = QHBoxLayout()
@@ -91,27 +114,20 @@ class AverageParamsTab(QWidget):
                 self.avarage_params_list.append(signal_params)
             # self.build_param_plot()
             self.avarage_params = getAverageParams(self.avarage_params_list)
-            self.init_table(self.signal_params_table,self.avarage_params,headers = ['Parameter', 'Value'])
+            self.fill_table(self.signal_params_table,self.avarage_params)
             
             self.params_df = pd.DataFrame(self.avarage_params.items(), columns = ['Parameter', 'Value'])
         else:
             self.file_path_edit.setText('Place path here')
     
-    def init_table(self, table, data, headers):
-        table.setRowCount(len(data))
-        table.setColumnCount(2)
-        table.setHorizontalHeaderLabels(headers)
+    def fill_table(self, table, data):
 
-        for row, (key, value) in enumerate(data.items()):
-            item_key = QTableWidgetItem(str(key))
+        for row, (_, value) in enumerate(data.items()):
+
             item_value = QTableWidgetItem('{:.5f}'.format(value))
 
-            table.verticalHeader().setVisible(False)
-
-            item_key.setFlags(item_key.flags() & ~Qt.ItemIsEditable)
             item_value.setFlags(item_value.flags() & ~Qt.ItemIsEditable)
 
-            table.setItem(row, 0, item_key)
             table.setItem(row, 1, item_value)
     
     def save_file(self):
@@ -138,5 +154,11 @@ class AverageParamsTab(QWidget):
         self.file_path_edit.setPlainText('')
         self.save_file_path_error_label.setText("")
         self.save_file_path_edit.setPlainText('')
-        self.signal_params_table.clearContents()
-        self.signal_params_table.setRowCount(0)
+        
+        column_count = self.signal_params_table.columnCount()
+        row_count = self.signal_params_table.rowCount()
+        for row in range(row_count):
+                for col in range(1, column_count):
+                    item = self.signal_params_table.item(row, col)
+                    if item is not None:
+                        item.setText("") 
